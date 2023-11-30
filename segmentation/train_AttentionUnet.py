@@ -17,7 +17,7 @@ model = AttU_Net(num_classes=2, checkpoint=False).cuda()
 
 import os
 from torch.utils.data import DataLoader
-from dataset.data_config.Camvid import BADMDataset, Bi_BADMDataset
+from utlis.BADMDataset_set import BADMDataset, Bi_BADMDataset
 
 # data_path
 
@@ -51,8 +51,8 @@ test_dataset = BADMDataset(
     y_test_dir,
 )
 
-train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, drop_last=True)
-val_loader = DataLoader(val_dataset, batch_size=4, shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=6, shuffle=True, drop_last=True)
+val_loader = DataLoader(val_dataset, batch_size=6, shuffle=True, drop_last=True)
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, drop_last=False)
 
 '''
@@ -88,8 +88,8 @@ test_dataset = Bi_BADMDataset(
     y_test_dir
 )
 
-train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, drop_last=True)
-val_loader = DataLoader(val_dataset, batch_size=4, shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=6, shuffle=True, drop_last=True)
+val_loader = DataLoader(val_dataset, batch_size=6, shuffle=True, drop_last=True)
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, drop_last=False)
 '''
 # # train
@@ -102,7 +102,7 @@ import numpy as np
 import os
 from utils.train_utils import evaluate_loss, combined_loss
 
-epochs_num = 34
+epochs_num = 50
 
 optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
