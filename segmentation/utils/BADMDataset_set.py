@@ -1,4 +1,4 @@
-# 导入库
+
 import os
 import torch
 from torch.utils.data import Dataset
@@ -13,20 +13,7 @@ from albumentations.pytorch.transforms import ToTensorV2
 torch.manual_seed(17)
 
 
-# 自定义数据集CamVidDataset
-class CamVidDataset(Dataset):
-    """CamVid Dataset. Read images, apply augmentation and preprocessing transformations.
-    
-    Args:
-        images_dir (str): path to images folder
-        masks_dir (str): path to segmentation masks folder
-        class_values (list): values of classes to extract from segmentation mask
-        augmentation (albumentations.Compose): data transfromation pipeline 
-            (e.g. flip, scale, etc.)
-        preprocessing (albumentations.Compose): data preprocessing 
-            (e.g. noralization, shape manipulation, etc.)
-    """
-
+class BADMDataset(Dataset):
     def __init__(self, images_dir, masks_dir):
         self.transform = A.Compose([
             A.Resize(224, 224),
@@ -51,18 +38,7 @@ class CamVidDataset(Dataset):
         return len(self.ids)
 
 
-class Bi_Dataset(Dataset):
-    """CamVid Dataset. Read images, apply augmentation and preprocessing transformations.
-
-    Args:
-        images_dir (str): path to images folder
-        masks_dir (str): path to segmentation masks folder
-        class_values (list): values of classes to extract from segmentation mask
-        augmentation (albumentations.Compose): data transfromation pipeline
-            (e.g. flip, scale, etc.)
-        preprocessing (albumentations.Compose): data preprocessing
-            (e.g. noralization, shape manipulation, etc.)
-    """
+class Bi_BADMDataset(Dataset):
 
     def __init__(self, pre_dir, post_dir, masks_dir):
         self.transform = A.Compose([
