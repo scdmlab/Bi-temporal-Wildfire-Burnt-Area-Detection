@@ -2,9 +2,9 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-img = cv2.imread(r"C:\Users\SseakomSui\Desktop\Empowering Wildfire Burnt Area Detection with Deep Learning\histogram matching\kenya\520.png",
+img = cv2.imread(r"",
                  flags=1)
-imgRef = cv2.imread(r"C:\Users\SseakomSui\Desktop\Empowering Wildfire Burnt Area Detection with Deep Learning\histogram matching\ref.png",
+imgRef = cv2.imread(r"",
                     flags=1)
 
 _, _, channel = img.shape
@@ -18,7 +18,7 @@ for i in range(channel):
     for j in range(256):
         tmp = abs(cdfImg[j] - cdfRef)
         tmp = tmp.tolist()
-        index = tmp.index(min(tmp))  # find the smallest number in tmp, get the index of this number
+        index = tmp.index(min(tmp))  
         imgOut[:, :, i][img[:, :, i] == j] = index
 
 fig = plt.figure(figsize=(10, 7))
@@ -35,5 +35,5 @@ plt.subplot(235, yticks=[]), plt.bar(bins[:-1], histRef)
 histOut, bins = np.histogram(imgOut.flatten(), 256)
 plt.subplot(236, yticks=[]), plt.bar(bins[:-1], histOut)
 plt.show()
-save_path = r"C:\Users\SseakomSui\Desktop\Empowering Wildfire Burnt Area Detection with Deep Learning\histogram matching\kenya\kenya_hm.png"
+save_path = r""
 cv2.imwrite(save_path,imgOut)
