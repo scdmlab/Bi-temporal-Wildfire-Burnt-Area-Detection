@@ -519,3 +519,145 @@ class Bi_U_Net(nn.Module):
         d1 = self.out_conv(d2)
 
         return d1
+
+    class Bi_AttU_Net(nn.Module):
+    def __init__(self, in_channel=3, num_classes=1, channel_list=[64, 128, 256, 512, 1024], checkpoint=False, convTranspose=True):
+        super(Bi_AttU_Net, self).__init__()
+    
+        def __init__(self,
+                     in_channel=3,
+                     num_classes=1,
+                     channel_list=[64, 128, 256, 512, 1024],
+                     checkpoint=False,
+                     convTranspose=True):
+            super(AttU_Net, self).__init__()
+            self.num_classes = num_classes
+            self.Maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
+    
+            self.Conv1 = conv_block(ch_in=in_channel, ch_out=channel_list[0])
+            self.Conv2 = conv_block(ch_in=channel_list[0], ch_out=channel_list[1])
+            self.Conv3 = conv_block(ch_in=channel_list[1], ch_out=channel_list[2])
+            self.Conv4 = conv_block(ch_in=channel_list[2], ch_out=channel_list[3])
+            self.Conv5 = conv_block(ch_in=channel_list[3], ch_out=channel_list[4])
+    
+            self.Up5 = up_conv(ch_in=channel_list[4], ch_out=channel_list[3], convTranspose=convTranspose)
+            self.Att5 = Attention_block(F_g=channel_list[3],
+                                        F_l=channel_list[3],
+                                        F_int=channel_list[2])
+            self.Up_conv5 = conv_block(ch_in=channel_list[4],
+                                       ch_out=channel_list[3])
+    
+            self.Up4 = up_conv(ch_in=channel_list[3], ch_out=channel_list[2], convTranspose=convTranspose)
+            self.Att4 = Attention_block(F_g=channel_list[2],
+                                        F_l=channel_list[2],
+                                        F_int=channel_list[1])
+            self.Up_conv4 = conv_block(ch_in=channel_list[3],
+                                       ch_out=channel_list[2])
+    
+            self.Up3 = up_conv(ch_in=channel_list[2], ch_out=channel_list[1], convTranspose=convTranspose)
+            self.Att3 = Attention_block(F_g=channel_list[1],
+                                        F_l=channel_list[1],
+                                        F_int=64)
+            self.Up_conv3 = conv_block(ch_in=channel_list[2],
+                                       ch_out=channel_list[1])
+    
+            self.Up2 = up_conv(ch_in=channel_list[1], ch_out=channel_list[0], convTranspose=convTranspose)
+            self.Att2 = Attention_block(F_g=channel_list[0],
+                                        F_l=channel_list[0],
+                                        F_int=channel_list[0] // 2)
+            self.Up_conv2 = conv_block(ch_in=channel_list[1],
+                                       ch_out=channel_list[0])
+    
+            self.Conv_1x1 = nn.Conv2d(channel_list[0],
+                                      num_classes,
+                                      kernel_size=1,
+                                      stride=1,
+                                      padding=0)
+    
+            self.up_trans_2048 = nn.ConvTranspose2d(in_channels=2048, out_channels=1024, kernel_size=5, stride=2,
+                                                    padding=0)
+            self.up_conv_2048_1024 = double_conv(2048, 1024)
+    
+            self.up_trans_1024 = nn.ConvTranspose2d(in_channels=1024, out_channels=512, kernel_size=5, stride=2,
+                                                    padding=0)
+            self.up_conv_1024_512 = double_conv(1024, 512)
+    
+            self.up_trans_512 = nn.ConvTranspose2d(in_channels=512, out_channels=256, kernel_size=5, stride=2,
+                                                   padding=0)
+            self.up_conv_512_256 = double_conv(512, 256)
+    
+            self.up_trans_256 = nn.ConvTranspose2d(in_channels=256, out_channels=128, kernel_size=5, stride=2,
+                                                   padding=0)
+            self.up_conv_256_128 = double_conv(256, 128)
+    
+    
+            # output layer
+            self.out_conv = out_conv(128, 1)
+            
+    
+            if not checkpoint:
+                init_weights(self)
+    
+    def forward(self, x_pre, x_post):
+        # encoder
+        x1_pre = self.Conv1(x_pre)
+    
+        x2_pre = self.Maxpool(x1_pre)
+        x2_pre = self.Conv2(x2_pre)
+    
+        x3_pre = self.Maxpool(x2_pre)
+        x3_pre = self.Conv3(x3_pre)
+    
+        x4_pre = self.Maxpool(x3_pre)
+        x4_pre = self.Conv4(x4_pre)
+    
+        x5_pre = self.Maxpool(x4_pre)
+        x5_pre = self.Conv5(x5_pre)
+    
+        x1_post = self.Conv1(x_post)
+    
+        x2_post = self.Maxpool(x1_post)
+        x2_post = self.Conv2(x2_post)
+    
+        x3_post = self.Maxpool(x2_post)
+        x3_post = self.Conv3(x3_post)
+    
+        x4_post = self.Maxpool(x3_post)
+        x4_post = self.Conv4(x4_post)
+    
+        x5_post = self.Maxpool(x4_post)
+        x5_post = self.Conv5(x5_post)
+    
+        bridge5 = torch.cat((x5_post, x5_pre), dim=1)
+        bridge4 = torch.cat((x5_post, x5_pre), dim=1)
+        bridge3 = torch.cat((x5_post, x5_pre), dim=1)
+        bridge2 = torch.cat((x5_post, x5_pre), dim=1)
+    
+        # decoder
+    
+        dB_B = self.up_trans_2048(bridge5)
+        dB_crop = crop_img(dB_B, x4_pre)
+        dB_u = torch.cat((dB_crop, x4_pre, x4_post), dim=1)
+        dB_u = self.Att5(g=bridge4, x=dB_u)
+        dB = self.up_conv_2048_1024(dB_u)
+    
+        d4_B = self.up_trans_1024(dB)
+        d4_crop = crop_img(d4_B, x3_pre)
+        d4_U = torch.cat((d4_crop, x3_pre, x3_post), dim=1)
+        d4_U = self.Att4(g=bridge3, x=d4_U)
+        d4 = self.up_conv_1024_512(d4_U)
+    
+        d3_B = self.up_trans_512(d4)
+        d3_crop = crop_img(d3_B, x2_pre)
+        d3_U = torch.cat((d3_crop, x2_pre, x2_post), dim=1)
+        d3_U = self.Att3(g=bridge2, x=d3_U)
+        d3 = self.up_conv_512_256(d3_U)
+    
+        d2_B = self.up_trans_256(d3)
+        d2_crop = crop_img(d2_B, x1_pre)
+        d2_U = torch.cat((d2_crop, x1_pre, x1_post), dim=1)
+        d2 = self.up_conv_256_128(d2_U)
+    
+        d1 = self.out_conv(d2)
+    
+        return d1
