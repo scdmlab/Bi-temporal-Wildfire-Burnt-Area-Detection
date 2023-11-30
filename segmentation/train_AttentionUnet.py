@@ -100,7 +100,7 @@ from d2l import torch as d2l
 import pandas as pd
 import numpy as np
 import os
-from utils.train_utils import evaluate_loss, combined_loss
+from utils.train_utils import evaluate_loss, combined_loss, dice_loss, focal_loss, combined_loss
 
 epochs_num = 50
 
@@ -110,41 +110,9 @@ schedule = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 50], 
 
 device = torch.device("cuda:0")
 
-'''
-dice loss
-'''
-import torch.nn.functional as F
 
 
-def dice_loss(y_pred, y_true, smooth=1):
-    y_pred = F.softmax(y_pred, dim=1)  # apply softmax to y_pred along the channel dimension
-    y_pred = y_pred[:, 1, :, :]  # take the probability of the foreground class
-    intersection = (y_pred * y_true).sum()
-    sum_masks = y_pred.sum() + y_true.sum()
-    dice = (2 * intersection + smooth) / (sum_masks + smooth)
-    return 1 - dice
-
-def focal_loss(y_pred, y_true, alpha=0.25, gamma=2, smooth=1):
-    y_pred = F.softmax(y_pred, dim=1)  # apply softmax to y_pred along the channel dimension
-    y_pred = y_pred[:, 1, :, :]  # take the probability of the foreground class
-    intersection = (y_pred * y_true).sum()
-    sum_masks = y_pred.sum() + y_true.sum()
-    dice = (2 * intersection + smooth) / (sum_masks + smooth)
-    focal_dice = (1 - dice) ** gamma
-    focal_loss = focal_dice * alpha
-    return focal_loss
-
-def combine_loss(y_pred, y_true):
-    bce_loss = F.cross_entropy(y_pred, y_true)
-
-    # Resize y_true to match the size of y_pred
-    y_true_resized = F.interpolate(y_true.unsqueeze(1), size=y_pred.shape[2:], mode='nearest').squeeze(1)
-
-    dl_loss = dice_loss(y_pred, y_true_resized)
-    return bce_loss + dl_loss
-
-
-loss_func = combine_loss
+loss_func = # loss function
 
 '''
 single-temporal train
