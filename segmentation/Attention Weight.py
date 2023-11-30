@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import init
 from PIL import Image
-y = torch.load("psi_50.pth")
+y = torch.load("psi_50.pth")# Attention Weight
 print(y.shape)
 y1=torch.squeeze(y)
 print(y1)
