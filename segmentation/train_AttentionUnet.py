@@ -3,7 +3,7 @@
 
 import numpy
 
-from models.AttentionUnet import AttU_Net, U_Net, Bi_U_Net, Bi_AttU-Net
+from models.AttentionUnet import AttU_Net, U_Net, Bi_U_Net, Bi_AttU_Net
 import torch
 import torch.nn as nn
 
