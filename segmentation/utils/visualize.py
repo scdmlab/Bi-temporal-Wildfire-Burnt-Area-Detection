@@ -78,15 +78,15 @@ def simple_bi(img_path, x):
     threshold = x
     bin_arr = np.where(gray_arr > threshold, 255, 0)
     bin_img = Image.fromarray(bin_arr.astype(np.uint8))
-    bin_img.save(r'C:\Users\SseakomSui\Desktop\origin\segmentation\r5\633_result_b.jpeg')
+    bin_img.save(r'')
 
 
-img_gt_path = r'C:\Users\SseakomSui\Desktop\Empowering Wildfire Burnt Area Detection with Deep Learning\histogram matching\au\633_label.png'
-img_pred_path = r'C:\Users\SseakomSui\Desktop\Empowering Wildfire Burnt Area Detection with Deep Learning\histogram matching\au\hmr.png'
+img_gt_path = r''
+img_pred_path = r''
 visual_confusedMatrix(img_gt_path, img_pred_path)
 
-# simple_bi(r'C:\Users\SseakomSui\Desktop\origin\segmentation\r5\633.png', 80)
+# simple_bi(r'', 80)
 
-# img_u = r'C:\Users\SseakomSui\Desktop\origin\segmentation\r2\28_result_p.jpeg'
-# img_p = r'C:\Users\SseakomSui\Desktop\origin\segmentation\r2\si_hm.jpeg'
+# img_u = r''
+# img_p = r''
 # visual_diff(img_u, img_p)
