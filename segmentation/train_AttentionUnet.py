@@ -1,55 +1,52 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Build the model
-
-# In[21]:
 import numpy
 
-from models.AttentionUnet import AttU_Net, U_Net, Bi_U_Net
+from models.AttentionUnet import AttU_Net, U_Net, Bi_U_Net, Bi_AttU-Net
 import torch
 import torch.nn as nn
 
 model = AttU_Net(num_classes=2, checkpoint=False).cuda()
 # model = U_Net(num_classes=2, checkpoint=False).cuda()
+# model = Bi_U_Net(num_classes=2, checkpoint=False).cuda()
+# model = Bi_AttU-Net(num_classes=2, checkpoint=False).cuda()
 
 # # Create the dataset loader
-
-# In[22]:
 
 
 import os
 from torch.utils.data import DataLoader
-from dataset.data_config.Camvid import CamVidDataset, Bi_Dataset
+from dataset.data_config.Camvid import BADMDataset, Bi_BADMDataset
 
 # data_path
 
 title = ""
-DATA_DIR = r'C:\Users\SseakomSui\Desktop\wisc\labelme'
+DATA_DIR = r''
 
 '''
-Post
+single-temporal
 '''
 x_train_dir = os.path.join(DATA_DIR, 'train')
 y_train_dir = os.path.join(DATA_DIR, 'train_labels')
 
-x_val_dir = os.path.join(DATA_DIR, 'test')
-y_val_dir = os.path.join(DATA_DIR, 'test_labels')
+x_val_dir = os.path.join(DATA_DIR, 'val')
+y_val_dir = os.path.join(DATA_DIR, 'val_labels')
 
 x_test_dir = os.path.join(DATA_DIR, 'test')
 y_test_dir = os.path.join(DATA_DIR, 'test_labels')
 
-train_dataset = CamVidDataset(
+train_dataset = BADMDataset(
     x_train_dir,
     y_train_dir,
 )
 
-val_dataset = CamVidDataset(
+val_dataset = BADMDataset(
     x_val_dir,
     y_val_dir,
 )
 
-test_dataset = CamVidDataset(
+test_dataset = BADMDataset(
     x_test_dir,
     y_test_dir,
 )
@@ -65,27 +62,27 @@ pre_train_dir = os.path.join(DATA_DIR, r'bi_temp\train\pre')
 post_train_dir = os.path.join(DATA_DIR, r'bi_temp\train\post')
 y_train_dir = os.path.join(DATA_DIR, r'bi_temp\train_labels')
 
-pre_val_dir = os.path.join(DATA_DIR, r'bi_temp\test\pre')
-post_val_dir = os.path.join(DATA_DIR, r'bi_temp\test\post')
-y_val_dir = os.path.join(DATA_DIR, r'bi_temp\test_labels')
+pre_val_dir = os.path.join(DATA_DIR, r'bi_temp\val\pre')
+post_val_dir = os.path.join(DATA_DIR, r'bi_temp\val\post')
+y_val_dir = os.path.join(DATA_DIR, r'bi_temp\val_labels')
 
 pre_test_dir = os.path.join(DATA_DIR, r'bi_temp\test\pre')
 post_test_dir = os.path.join(DATA_DIR, r'bi_temp\test\post')
 y_test_dir = os.path.join(DATA_DIR, r'bi_temp\test_labels')
 
-train_dataset = Bi_Dataset(
+train_dataset = Bi_BADMDataset(
     pre_train_dir,
     post_train_dir,
     y_train_dir
 )
 
-val_dataset = Bi_Dataset(
+val_dataset = Bi_BADMDataset(
     pre_val_dir,
     post_val_dir,
     y_val_dir
 )
 
-test_dataset = Bi_Dataset(
+test_dataset = Bi_BADMDataset(
     pre_test_dir,
     post_test_dir,
     y_test_dir
@@ -112,7 +109,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 schedule = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 50], gamma=0.5)
 
 device = torch.device("cuda:0")
-# loss_func = nn.CrossEntropyLoss(ignore_index=255)
+
 '''
 dice loss
 '''
@@ -150,7 +147,7 @@ def combine_loss(y_pred, y_true):
 loss_func = combine_loss
 
 '''
-post train
+single-temporal train
 '''
 
 
@@ -169,8 +166,6 @@ def train_model(model, train_iter, val_iter, loss_func, optimizer, num_epochs, s
     lr_list = []
 
     for epoch in range(num_epochs):
-        # Sum of training loss, sum of training accuracy, no. of examples,
-        # no. of predictions
         metric = d2l.Accumulator(4)
         for i, (X, labels) in enumerate(train_iter):
             timer.start()
@@ -221,19 +216,18 @@ def train_model(model, train_iter, val_iter, loss_func, optimizer, num_epochs, s
         df["lr"] = lr_list
         df['time'] = time_list
 
-        df.to_excel("trash/Unet_OnlyPost_small.xlsx")
+        df.to_excel("trash/train.xlsx")
 
         if np.mod(epoch + 1, 5) == 0:
-            torch.save(model.state_dict(), f'trash/TransUnet_{epoch + 1}.pth')
+            torch.save(model.state_dict(), f'trash/train_epoch_{epoch + 1}.pth')
 
-    torch.save(model.state_dict(), f'trash/Att.pth')
+    torch.save(model.state_dict(), f'trash/train.pth')
 
 
 train_model(model, train_loader, val_loader, loss_func, optimizer, epochs_num, schedule, device)
 
 # # Test
 
-# In[24]:
 
 
 from utils.train_utils import test_gpu, show_result_pyplot, inference_model
@@ -241,9 +235,7 @@ from sklearn.metrics import confusion_matrix
 
 seg_pred, acc = test_gpu(model, test_loader, device=torch.device("cuda:0"))
 print(acc)
-# show_result_pyplot(model, img_path, result = seg_pred[0])
 
-# get confusion matrix
 y_true = []
 y_pred = []
 for data, labels in test_loader:
@@ -258,73 +250,14 @@ print(conf_mat)
 
 # # Inference
 
-# In[25]:
-
 
 from utils.train_utils import inference_model, show_result_pyplot
 
 
-img_path = r"C:\Users\SseakomSui\Desktop\origin\segmentation\r1\250.png"
-# save_path = r"C:\Users\SseakomSui\Desktop\spain\u.png"
+img_path = r""
 result = inference_model(model, img_path)
 show_result_pyplot(model, img_path, result)
 
-# Calculate AUC and AUPR
-from sklearn.metrics import auc, roc_curve, precision_recall_curve
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelBinarizer
-
-lb = LabelBinarizer()
-
-y_pred = model(data).detach().cpu().numpy()
-y_true = labels.detach().cpu().numpy()
-
-
-
-import numpy as np
-
-
-arr1, arr2 = np.split(y_pred, 2, axis=1)
-
-# Squeeze arr2 to shape (1, 224, 224)
-arr2_squeezed = np.squeeze(arr2, axis=1)
-
-
-arr_r = np.add(arr1, arr2_squeezed)
-
-
-arr_r_norm = arr_r / np.linalg.norm(arr_r)
-
-fpr, tpr, _ = roc_curve(y_true.ravel(), arr_r_norm.ravel())
-roc_auc = auc(fpr, tpr)
-
-data_RoC = {'FPR': fpr, 'TPR': tpr}
-
-# Convert the dictionary to a DataFrame
-df = pd.DataFrame(data_RoC)
-
-# Save the DataFrame to an Excel file with headers
-df.to_excel('RoC5.xlsx', index=False)
-
-precision, recall, _ = precision_recall_curve(y_true.ravel(), arr_r_norm.ravel())
-pr_auc = auc(recall, precision)
-
-# Plot ROC curve
-
-plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic')
-plt.legend(loc="lower right")
-plt.show()
-
-# Plot precision-recall curve
-plt.plot(recall, precision, label='Precision-Recall curve (area = %0.2f)' % pr_auc)
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall Curve')
-plt.legend(loc="lower right")
-plt.show()
 
 
 
