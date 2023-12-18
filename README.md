@@ -1,7 +1,6 @@
 # Project 
 
 Bi-temporal Convolutional Neural Network based on U-Net Architecture for Wildfire Burnt Area Detection.
-Purpose
 The purpose of this project is to provide more accurate prediction results compared to publicly available products, utilizing a relaxed dataset requirement and achieving higher spatial resolution. The model utilizes two temporal images of the same location, pre and post-wildfire occurrences, in the form of false-color images for better distinction between burnt and unburnt areas.
 
 ## [File: train_AttentionUnet.py](segmentation/train_AttentionUnet.py)
