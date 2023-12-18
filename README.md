@@ -4,7 +4,7 @@ Bi-temporal Convolutional Neural Network based on U-Net Architecture for Wildfir
 Purpose
 The purpose of this project is to provide more accurate prediction results compared to publicly available products, utilizing a relaxed dataset requirement and achieving higher spatial resolution. The model utilizes two temporal images of the same location, pre and post-wildfire occurrences, in the form of false-color images for better distinction between burnt and unburnt areas.
 
-## File: train_AttentionUnet.py
+## File: train_AttentionUnet.py(segmentation/train_AttentionUnet.py)
 
 The `train_AttentionUnet.py` contains scripts for model training and testing. The neural network's hyperparameters can be adjusted using different parameters. It supports the following models and loss functions:
 
