@@ -14,11 +14,11 @@ The `train_AttentionUnet.py` contains scripts for model training and testing. Th
 - Bi-temporal U-Net with attention gate
 - Various loss functions
 
-## File: AttentionUnet.py
+## [File: AttentionUnet.py](segmentation/models/AttentionUnet.py)
 
 The `AttentionUnet.py` file contains the architecture of the neural network model. This script defines the structure of the Attention U-Net used for burnt area detection caused by wildfires.
 
-## File: BADMDataset_set.py
+## [File: BADMDataset_set.py](segmentation/utils/BADMDataset_set.py)
 
 The `BADMDataset_set.py` script initializes the dataset required for training and testing. It deals with dual temporal images, each having dimensions of 256x256x3, and produces predictions of size 128x128x1.
 
