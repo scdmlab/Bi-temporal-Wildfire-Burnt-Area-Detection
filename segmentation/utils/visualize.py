@@ -85,8 +85,4 @@ img_gt_path = r''
 img_pred_path = r''
 visual_confusedMatrix(img_gt_path, img_pred_path)
 
-# simple_bi(r'', 80)
 
-# img_u = r''
-# img_p = r''
-# visual_diff(img_u, img_p)
