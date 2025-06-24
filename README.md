@@ -21,8 +21,8 @@ A PyTorch implementation of Bi-temporal Attention U-Net for wildfire burnt area 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/bitemporal-attention-unet.git
-cd bitemporal-attention-unet
+git clone https://github.com/scdmlab/Bi-temporal-Wildfire-Burnt-Area-Detection.git
+cd Bi-temporal-Wildfire-Burnt-Area-Detection
 
 # Install dependencies
 pip install -r requirements.txt
@@ -168,26 +168,59 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you find this work useful, please consider citing:
 
 ```bibtex
-@misc{bitemporal-attention-unet,
-  title={Bi-temporal Attention U-Net for Wildfire Burnt Area Detection},
-  author={Your Name},
-  year={2025},
-  publisher={GitHub},
-  url={https://github.com/yourusername/bitemporal-attention-unet}
+@article{sui2024biau,
+  title={BiAU-Net: Wildfire burnt area mapping using bi-temporal Sentinel-2 imagery and U-Net with attention mechanism},
+  author={Sui, Tang and Huang, Qunying and Wu, Mingda and Wu, Meiliu and Zhang, Zhou},
+  journal={International Journal of Applied Earth Observation and Geoinformation},
+  volume={132},
+  pages={104034},
+  year={2024},
+  publisher={Elsevier}
 }
 ```
 
-## 🔗 Related Work
+## 🔗 Related Work from Our Lab
 
-- [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597)
-- [Attention U-Net: Learning Where to Look for the Pancreas](https://arxiv.org/abs/1804.03999)
-- [A Deep Learning Framework for Wildfire Detection](https://arxiv.org/abs/1901.05631)
+### Publications:
+
+- [A Remote Sensing Spectral Index Guided Bitemporal Residual Attention Network for Wildfire Burn Severity Mapping](https://ieeexplore.ieee.org/document/10449821)
+- [Empowering Wildfire Damage Assessment with Bi-temporal Sentinel-2 Data and Deep Learning](https://ui.adsabs.harvard.edu/abs/2023AGUFMNH21A..03H/abstract)
+- [Pixel-wise Wildfire Burn Severity Classification with Bi-temporal Sentinel-2 Data and Deep Learning](https://dl.acm.org/doi/10.1145/3592307.3592358)
+
+### Citations:
+
+```bibtex
+@article{wu2024remote,
+  title={A Remote Sensing Spectral Index Guided Bitemporal Residual Attention Network for Wildfire Burn Severity Mapping},
+  author={Wu, Mingda and Huang, Qunying and Sui, Tang and Peng, Bo and Yu, Manzhu},
+  journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing},
+  year={2024},
+  publisher={IEEE}
+}
+
+@inproceedings{huang2023empowering,
+  title={Empowering Wildfire Damage Assessment with Bi-temporal Sentinel-2 Data and Deep Learning},
+  author={Huang, Qunying and Wu, Mingda and Sui, Tang},
+  booktitle={AGU Fall Meeting Abstracts},
+  volume={2023},
+  pages={NH21A--03},
+  year={2023}
+}
+
+@inproceedings{wu2023pixel,
+  title={Pixel-wise Wildfire Burn Severity Classification with Bi-temporal Sentinel-2 Data and Deep Learning},
+  author={Wu, Mingda and Huang, Qunying and Sui, Tang and Wu, Meiliu},
+  booktitle={Proceedings of the 2023 6th International Conference on Big Data Technologies},
+  pages={360--364},
+  year={2023}
+}
+```
 
 ## 📞 Contact
 
-- **Author**: Your Name
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Author**: Tang Sui
+- **Email**: tsui5@wisc.edu
+- **GitHub**: [@scdmlab](https://github.com/scdmlab)
 
 ---
 

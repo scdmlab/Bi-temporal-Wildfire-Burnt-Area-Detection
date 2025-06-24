@@ -1,7 +1,8 @@
 """
 Visualization utilities for Bi-temporal Wildfire Burnt Area Detection
 
-Author: Your Name
+Author: Tang Sui
+Email: tsui5@wisc.edu
 """
 
 import numpy as np

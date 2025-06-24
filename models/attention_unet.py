@@ -1,8 +1,8 @@
 """
 Bi-temporal Attention U-Net for Wildfire Burnt Area Detection
 
-Author: Your Name
-Email: your.email@example.com
+Author: Tang Sui
+Email: tsui5@wisc.edu
 """
 
 import torch

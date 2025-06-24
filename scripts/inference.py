@@ -5,7 +5,8 @@ Inference script for Bi-temporal Wildfire Burnt Area Detection
 Usage:
     python scripts/inference.py --config configs/config.yaml --model outputs/best_model.pth --pre-dir data/test/pre --post-dir data/test/post --output-dir results/
 
-Author: Your Name
+Author: Tang Sui
+Email: tsui5@wisc.edu
 """
 
 import os

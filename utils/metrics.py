@@ -1,8 +1,8 @@
 """
 Evaluation metrics for wildfire burnt area detection
 
-Author: Your Name
-Email: your.email@example.com
+Author: Tang Sui
+Email: tsui5@wisc.edu
 """
 
 import torch

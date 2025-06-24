@@ -3,10 +3,9 @@
 
 # Data configuration
 data:
-  # Directory paths - UPDATE THESE PATHS
-  pre_dir: "/path/to/your/pre/images"
-  post_dir: "/path/to/your/post/images" 
-  mask_dir: "/path/to/your/masks"
+  # Directory paths - UPDATE THESE PATHS  pre_dir: "/path/to/your/pre_fire/images"
+  post_dir: "/path/to/your/post_fire/images"
+  mask_dir: "/path/to/your/burnt_masks"
   
   # Optional separate validation directories
   # If not provided, val_split will be used to create validation set

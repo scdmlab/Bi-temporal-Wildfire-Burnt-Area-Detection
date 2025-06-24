@@ -5,7 +5,8 @@ Evaluation script for Bi-temporal Wildfire Burnt Area Detection
 Usage:
     python scripts/evaluate.py --config configs/config.yaml --model outputs/best_model.pth --data-dir data/test
 
-Author: Your Name
+Author: Tang Sui
+Email: tsui5@wisc.edu
 """
 
 import os
