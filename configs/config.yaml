@@ -1,0 +1,63 @@
+# Bi-temporal Wildfire Burnt Area Detection Model Configuration
+
+# Data configuration
+data:
+  # Directory paths
+  pre_dir: "/path/to/pre_fire/images"
+  post_dir: "/path/to/post_fire/images"
+  mask_dir: "/path/to/burnt_masks"
+  
+  # Optional separate validation directories
+  # val_pre_dir: "/path/to/val/pre_fire/images"
+  # val_post_dir: "/path/to/val/post_fire/images"
+  # val_mask_dir: "/path/to/val/burnt_masks"
+  
+  # Data splitting (if separate val dirs not provided)
+  val_split: 0.2
+  
+  # Image processing
+  image_size: [224, 224]  # [height, width]
+  normalize: true
+
+# Model configuration
+model:
+  type: "bitemporal_unet"  # Options: "unet", "attention_unet", "bitemporal_unet", "bitemporal_attention_unet"
+  params:
+    in_channels: 3
+    num_classes: 1  # 1 for binary burnt area detection, >1 for multi-class
+    channels: [64, 128, 256, 512, 1024]
+    use_transpose: true
+    init_weights_flag: true
+
+# Loss function configuration
+loss:
+  type: "combined"  # Options: "bce", "ce", "dice", "focal", "iou", "combined"
+  params:
+    ce_weight: 1.0
+    dice_weight: 1.0
+    focal_weight: 0.0
+    num_classes: 1
+
+# Optimizer configuration
+optimizer:
+  type: "adam"  # Options: "adam", "sgd"
+  params:
+    lr: 0.001
+    weight_decay: 0.0001
+
+# Learning rate scheduler (optional)
+scheduler:
+  type: "step"  # Options: "step", "multistep", "cosine"
+  params:
+    step_size: 30
+    gamma: 0.1
+
+# Training configuration
+training:
+  epochs: 100
+  batch_size: 4
+  num_workers: 4
+  save_freq: 10  # Save checkpoint every N epochs
+
+# Random seed for reproducibility
+seed: 42

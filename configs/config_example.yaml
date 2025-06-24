@@ -1,0 +1,125 @@
+# Example configuration for wildfire burnt area detection
+# Copy this to config.yaml and modify paths for your dataset
+
+# Data configuration
+data:
+  # Directory paths - UPDATE THESE PATHS
+  pre_dir: "/path/to/your/pre/images"
+  post_dir: "/path/to/your/post/images" 
+  mask_dir: "/path/to/your/masks"
+  
+  # Optional separate validation directories
+  # If not provided, val_split will be used to create validation set
+  # val_pre_dir: "/path/to/val/pre/images"
+  # val_post_dir: "/path/to/val/post/images"
+  # val_mask_dir: "/path/to/val/masks"
+  
+  # Data splitting (used if separate validation dirs not provided)
+  val_split: 0.2
+  
+  # Image processing
+  image_size: [224, 224]  # [height, width] - adjust based on your GPU memory
+  normalize: true
+  
+  # Data augmentation (for training)
+  augmentation:
+    enabled: true
+    horizontal_flip: 0.5
+    vertical_flip: 0.5
+    rotation: 15
+    brightness: 0.1
+    contrast: 0.1
+
+# Model configuration
+model:
+  # Available types: "unet", "attention_unet", "bitemporal_unet", "bitemporal_attention_unet"
+  type: "bitemporal_attention_unet"  # Recommended for best performance
+  params:
+    in_channels: 3
+    num_classes: 1  # 1 for binary burnt area detection
+    channels: [64, 128, 256, 512, 1024]  # Encoder channels
+    use_attention: true
+
+# Loss function configuration
+loss:
+  type: "combined"  # Options: "bce", "dice", "focal", "combined"
+  params:
+    ce_weight: 1.0      # Cross-entropy weight
+    dice_weight: 1.0    # Dice loss weight
+    focal_weight: 0.0   # Focal loss weight (0 to disable)
+    focal_alpha: 0.25   # Focal loss alpha
+    focal_gamma: 2.0    # Focal loss gamma
+
+# Training configuration
+training:
+  # Basic training parameters
+  epochs: 100
+  batch_size: 4       # Adjust based on your GPU memory
+  lr: 0.001          # Learning rate
+  weight_decay: 1e-4
+  
+  # Learning rate scheduler
+  scheduler:
+    type: "step"      # Options: "step", "cosine", "plateau"
+    step_size: 30     # For step scheduler
+    gamma: 0.1        # For step scheduler
+    patience: 10      # For plateau scheduler
+  
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 15
+    min_delta: 0.001
+  
+  # Validation
+  val_interval: 1     # Validate every N epochs
+  
+  # Checkpointing
+  save_interval: 10   # Save checkpoint every N epochs
+  save_best: true     # Save best model based on validation loss
+
+# Inference configuration
+inference:
+  # Post-processing
+  threshold: 0.5      # Binary threshold for burnt area detection
+  min_area: 10        # Minimum area for change regions (pixels)
+  
+  # Output formats
+  save_probability: true    # Save probability maps
+  save_overlay: true       # Save overlay visualizations
+  save_binary: true        # Save binary predictions
+
+# Evaluation metrics
+metrics:
+  # Which metrics to compute during training/evaluation
+  - "accuracy"
+  - "precision" 
+  - "recall"
+  - "f1"
+  - "iou"
+  - "auc_roc"
+  - "auc_pr"
+
+# Logging and visualization
+logging:
+  # Experiment tracking
+  experiment_name: "wildfire_change_detection"
+  log_interval: 10    # Log every N batches
+  
+  # Visualization
+  plot_training_curves: true
+  save_sample_predictions: true
+  num_vis_samples: 5  # Number of samples to visualize
+
+# Hardware configuration
+hardware:
+  # Device settings
+  device: "auto"      # "auto", "cuda", "cpu"
+  num_workers: 4      # Number of data loading workers
+  pin_memory: true    # Pin memory for faster GPU transfer
+  
+  # Mixed precision training (if using newer PyTorch)
+  use_amp: false      # Automatic Mixed Precision
+
+# Reproducibility
+seed: 42              # Random seed for reproducibility
